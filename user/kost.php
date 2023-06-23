@@ -3,7 +3,7 @@ session_start();
 unset($_SESSION['menu']);
 $_SESSION['menu'] = 'penilaian';
 require_once './../includes/header.php';
-require_once './functions/penilaian.php';
+require_once './functions/kost.php';
 $id_user = $_SESSION['id_user'];
 
 // $dataAlternatif = $koneksi->query("SELECT id_alternatif, nama_alternatif FROM alternatif");
@@ -113,7 +113,7 @@ Swal.fire({
             <div class="col-xxl-12 mt-5 ms-xxl-1">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        DAFTAR PENILAIAN
+                        DAFTAR KOST
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

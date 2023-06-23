@@ -52,15 +52,11 @@ if(!isset($_SESSION['login']) && $_SESSION['login'] != true){
                 <div class="navbar-nav ms-auto me-auto mt-3 mb-3">
                     <a class="nav-link <?=$_SESSION['menu'] == 'beranda-user' ? 'active':'';?>"
                         href="index.php">Beranda</a>
-                    <a class="nav-link <?=$_SESSION['menu'] == 'alternatif' ? 'active':'';?>"
-                        href="alternatif.php">Alternatif</a>
+                    <!-- <a class="nav-link <?=$_SESSION['menu'] == 'alternatif' ? 'active':'';?>"
+                        href="alternatif.php">Alternatif</a> -->
                     <a class="nav-link <?=$_SESSION['menu'] == 'kriteria' ? 'active':'';?>"
                         href="kriteria.php">Kriteria</a>
-                    <a class="nav-link <?=$_SESSION['menu'] == 'sub-kriteria' ? 'active':'';?>" href="#">Sub
-                        Kriteria</a>
-                    <a class="nav-link <?=$_SESSION['menu'] == 'bobot' ? 'active':'';?>" href="#">Bobot</a>
-                    <a class="nav-link <?=$_SESSION['menu'] == 'penilaian' ? 'active':'';?>"
-                        href="penilaian.php">Penilaian</a>
+                    <a class="nav-link <?=$_SESSION['menu'] == 'penilaian' ? 'active':'';?>" href="kost.php">Kost</a>
                     <a class="nav-link <?=$_SESSION['menu'] == 'hasil' ? 'active':'';?>" href="hasil.php">Hasil</a>
                     <a class="nav-link" href="../auth/logout.php">Logout</a>
                 </div>

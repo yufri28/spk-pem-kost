@@ -51,3 +51,16 @@
 </body>
 
 </html>
+
+
+<?php 
+
+      $data = [1,2];
+
+      $i = 1;
+      foreach ($data as $value) {
+          echo "C".$i.": $value";
+          $i++;
+      }
+
+?>

@@ -1,6 +1,105 @@
 <?php 
+session_start();
+unset($_SESSION['menu']);
+$_SESSION['menu'] = 'kriteria';
 require_once './header.php';
+require_once './functions/kriteria.php';
+$id_user = $_SESSION['id_user'];
+
+if(isset($_POST['simpan'])){
+    $prioritas1 = $_POST['prioritas_1'];
+    $prioritas2 = $_POST['prioritas_2'];
+    $prioritas3 = $_POST['prioritas_3'];
+    $prioritas4 = $_POST['prioritas_4'];
+    $prioritas5 = $_POST['prioritas_5'];
+
+    $dataTampung = [
+        $prioritas1,$prioritas2,$prioritas3,$prioritas4,$prioritas5
+    ];
+    $dataBobotKriteria = [
+        $prioritas1 => 0.3,
+        $prioritas2 => 0.2,
+        $prioritas3 => 0.2,
+        $prioritas4 => 0.2,
+        $prioritas5 => 0.1,
+    ];
+    $Kriteria->tambahTampung($dataTampung, $id_user);
+    $tambahBobotKriteria = $Kriteria->tambahBobotKriteria($dataBobotKriteria, $id_user);
+}
+if(isset($_POST['edit'])){
+    $id = $_POST['id_tampung'];
+    $id_bobot = $_POST['id_bobot'];
+    $prioritas1 = $_POST['prioritas_1'];
+    $prioritas2 = $_POST['prioritas_2'];
+    $prioritas3 = $_POST['prioritas_3'];
+    $prioritas4 = $_POST['prioritas_4'];
+    $prioritas5 = $_POST['prioritas_5'];
+    $dataTampung = [
+        $prioritas1,$prioritas2,$prioritas3,$prioritas4,$prioritas5
+    ];
+    $dataBobotKriteria = [
+        $prioritas1 => 0.3,
+        $prioritas2 => 0.2,
+        $prioritas3 => 0.2,
+        $prioritas4 => 0.2,
+        $prioritas5 => 0.1,
+    ];
+    $tambahBobotKriteria = $Kriteria->editBobotKriteria($id_bobot,$dataBobotKriteria);
+    $Kriteria->editTampung($id,$dataTampung);
+}
+
+$data_Kriteria = $Kriteria->getKriteria();
+$id_bobot = mysqli_fetch_assoc($data_Kriteria);
+$dataKriteria = [
+    "Fasilitas", "Jarak", "Biaya", "Luas Kamar", "Keamanan"
+];
+
+
+// $stmt = $koneksi->prepare("SELECT * FROM bobot_kriteria WHERE f_id_user=?");
+// $stmt->bind_param("i", $id_user);
+// $stmt->execute();
+// $result = $stmt->get_result();
+// $stmt->close();
+
+$dataTampung = $koneksi->query("SELECT * FROM tabel_tampung WHERE f_id_user='$id_user'");
+
+
 ?>
+<!-- Tampilkan pesan sukses atau error jika sesi tersebut diatur -->
+<?php if (mysqli_num_rows($data_Kriteria) <= 0): ?>
+<script>
+Swal.fire({
+    title: 'Pesan',
+    text: 'Pililah kriteria sesuai prioritas yang Anda inginkan pada kos, seperti Fasilitas, Jarak, Biaya, Luas Kamar, dan Keamanan. Misalnya Anda ingin mencari kos dengan meprioritaskan Fasilitas pada prioritas 1, Biaya pada prioritas 2, Luas Kamar pada prioritas 3, Keamanan pada prioritas 4 dan Jarak pada prioritas 5. Dari pilihan prioritas tersebut, sistem akan merekomendasikan kos dengan kriteria kos dengan Fasilitas paling bagus kemudian diikuti dengan kriteria lainnya.',
+    icon: 'warning',
+    confirmButtonText: 'Paham'
+});
+</script>
+<?php endif; ?>
+<?php if (isset($_SESSION['success'])): ?>
+<script>
+Swal.fire({
+    title: 'Sukses!',
+    text: '<?php echo $_SESSION['success']; ?>',
+    icon: 'success',
+    confirmButtonText: 'OK'
+});
+</script>
+<?php unset($_SESSION['success']); // Menghapus session setelah ditampilkan ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error'])): ?>
+<script>
+Swal.fire({
+    title: 'Error!',
+    text: '<?php echo $_SESSION['error']; ?>',
+    icon: 'error',
+    confirmButtonText: 'OK'
+});
+</script>
+<?php unset($_SESSION['error']); // Menghapus session setelah ditampilkan ?>
+<?php endif; ?>
+
 <div class="container" style="font-family: 'Prompt', sans-serif">
     <div class="row">
         <div class="d-xxl-flex">
@@ -8,64 +107,67 @@ require_once './header.php';
                 <div class="card">
                     <div class="card-header bg-primary">
                         <h5 class="text-center text-white pt-2 col-12 btn-outline-primary">
-                            Tambah Data
+                            Tambah Data Kriteria
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <div class="mb-3 mt-3">
-                            <label for="exampleFormControlInput1" class="form-label">Nama Kriteria</label>
-                            <input type="email" class="form-control" id="exampleFormControlInput1"
-                                placeholder="Nama Kriteria" />
+                    <form method="post" action="">
+                        <div class="card-body">
+                            <div class="mb-3 mt-3">
+                                <label for="nama_kriteria" class="form-label">Kode Kriteria</label>
+                                <input class="form-control" name="nama_kriteria" type="text" placeholder="Kode Kriteria"
+                                    aria-label="default input example">
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label for="nama_kriteria" class="form-label">Nama Kriteria</label>
+                                <input class="form-control" name="nama_kriteria" type="text" placeholder="Nama Kriteria"
+                                    aria-label="default input example">
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label for="nama_kriteria" class="form-label">Nama Kriteria</label>
+                                <select class="form-select" id="prioritas_1" name="prioritas_1"
+                                    aria-label="Default select example">
+                                    <option value="">-- Pilih Jenis --</option>
+                                    <option value="Benefit">Benefit</option>
+                                    <option value="Cost">Cost</option>
+
+                                </select>
+                            </div>
+                            <button type="submit" name="simpan" class="btn col-12 btn-outline-primary">
+                                Simpan
+                            </button>
                         </div>
-                        <div class="mb-3 mt-3">
-                            <label for="exampleFormControlInput1" class="form-label">Sifat Kriteria</label>
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>-- Pilih Sifat Kriteria --</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                        <button type="button" class="btn col-12 btn-outline-primary">
-                            Simpan
-                        </button>
-                    </div>
+                    </form>
                 </div>
             </div>
             <div class="col-xxl-9 mt-5 ms-xxl-5">
                 <div class="card">
-                    <div class="card-header bg-primary text-white">DAFTAR KOST</div>
+                    <div class="card-header bg-primary text-white">DAFTAR KRITERIA</div>
                     <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">No</th>
-                                    <th scope="col">Nama</th>
-                                    <th scope="col">Sifat</th>
-                                    <th scope="col">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-group-divider">
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Biaya Kost Perbulan</td>
-                                    <td>Cost</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Fasilitas</td>
-                                    <td>Benefit</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Keamanan</td>
-                                    <td>Benefit</td>
-                                    <td>@fat</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered nowrap" style="width:100%" id="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No</th>
+                                        <th scope="col">Kode</th>
+                                        <th scope="col">Nama</th>
+                                        <th scope="col">Sifat</th>
+                                        <th scope="col">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-group-divider">
+
+                                    <?php foreach ($data_Kriteria as $key => $kriteria):?>
+                                    <tr>
+                                        <th scope="row"><?=$key+1;?></th>
+                                        <th scope="row"><?=$kriteria['id_kriteria'];?></th>
+                                        <td><?=$kriteria['nama_kriteria'];?></td>
+                                        <td><?=$kriteria['jenis_kriteria'];?></td>
+                                        <td>Hapus</td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,3 +176,74 @@ require_once './header.php';
     <?php 
 require_once './footer.php';
 ?>
+
+    <script>
+    $(document).ready(function() {
+        $("#prioritas_1").change(function() {
+            var prioritas_1 = $("#prioritas_1").val();
+            $.ajax({
+                type: 'POST',
+                url: "./functions/pilihan.php",
+                data: {
+                    prioritas_1: [prioritas_1]
+                },
+                cache: false,
+                success: function(msg) {
+                    $("#prioritas_2").html(msg);
+                }
+            });
+        });
+
+        $("#prioritas_2").change(function() {
+            var prioritas_1 = $("#prioritas_1").val();
+            var prioritas_2 = $("#prioritas_2").val();
+            $.ajax({
+                type: 'POST',
+                url: "./functions/pilihan.php",
+                data: {
+                    prioritas_2: [prioritas_1, prioritas_2]
+                },
+                cache: false,
+                success: function(msg) {
+                    $("#prioritas_3").html(msg);
+                }
+            });
+        });
+
+        $("#prioritas_3").change(function() {
+            var prioritas_1 = $("#prioritas_1").val();
+            var prioritas_2 = $("#prioritas_2").val();
+            var prioritas_3 = $("#prioritas_3").val();
+            $.ajax({
+                type: 'POST',
+                url: "./functions/pilihan.php",
+                data: {
+                    prioritas_3: [prioritas_1, prioritas_2, prioritas_3]
+                },
+                cache: false,
+                success: function(msg) {
+                    $("#prioritas_4").html(msg);
+                }
+            });
+            $("#prioritas_4").change(function() {
+                var prioritas_1 = $("#prioritas_1").val();
+                var prioritas_2 = $("#prioritas_2").val();
+                var prioritas_3 = $("#prioritas_3").val();
+                var prioritas_4 = $("#prioritas_4").val();
+                $.ajax({
+                    type: 'POST',
+                    url: "./functions/pilihan.php",
+                    data: {
+                        prioritas_4: [prioritas_1, prioritas_2, prioritas_3,
+                            prioritas_4
+                        ]
+                    },
+                    cache: false,
+                    success: function(msg) {
+                        $("#prioritas_5").html(msg);
+                    }
+                });
+            });
+        });
+    });
+    </script>

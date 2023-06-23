@@ -55,21 +55,6 @@ GROUP BY a.nama_alternatif;");
         </div>
     </div>
     <div id="mapid"></div>
-    <div id="legend">
-        <h3>Legenda</h3>
-        <div class="legend-item">
-            <span class="legend-marker" style="background-color: red;"></span>
-            Lokasi A
-        </div>
-        <div class="legend-item">
-            <span class="legend-marker" style="background-color: blue;"></span>
-            Lokasi B
-        </div>
-        <div class="legend-item">
-            <span class="legend-marker" style="background-color: green;"></span>
-            Lokasi C
-        </div>
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
     </script>
