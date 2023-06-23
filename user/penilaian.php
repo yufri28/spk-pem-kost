@@ -26,7 +26,6 @@ if(isset($_POST['simpan'])){
     $prioritas3 = $_POST['prioritas_3'];
     $prioritas4 = $_POST['prioritas_4'];
     $prioritas5 = $_POST['prioritas_5'];
-
     $dataTampung = [
         $prioritas1,$prioritas2,$prioritas3,$prioritas4,$prioritas5
     ];
@@ -67,27 +66,6 @@ $idKriteriaC2 = mysqli_fetch_assoc($dataJarak);
 $idKriteriaC3 = mysqli_fetch_assoc($dataBiaya);
 $idKriteriaC4 = mysqli_fetch_assoc($dataLuasKamar);
 $idKriteriaC5 = mysqli_fetch_assoc($dataKeamanan);
-
-// if (isset($_POST['simpan'])) {
-//     $idAlternatif = htmlspecialchars($_POST['id_alternatif']);
-//     $dataKriteria = $_POST['kriteria'];
-//     $dataSubKriteria = $_POST['sub_kriteria'];
-//     $tambahDataPenilaian = $penilaian->tambahPenilaian($idAlternatif, $dataKriteria, $dataSubKriteria);
-// }
-
-
-// if (isset($_POST['edit'])) {
-//     $idAlternatif = htmlspecialchars($_POST['id_alternatif']);
-//     $dataKriteria = $_POST['kriteria'];
-//     $dataSubKriteria = $_POST['sub_kriteria'];
-//     $dataAltKriteria = $_POST['id_alt_kriteria'];
-//     $tambahDataPenilaian = $penilaian->editPenilaian($dataAltKriteria, $idAlternatif, $dataKriteria, $dataSubKriteria);
-//     for ($i = 0; $i < count($_POST['id_alt_kriteria']); $i++) {
-//         $idKriterias = $_POST['id_alt_kriteria'][$i];
-//         $idSubKriterias = $_POST['sub_kriteria'][$i];
-//         echo $idKriterias." : ".$idSubKriterias."\n";
-//     }
-// }
 
 
 $dataKriteria = [
@@ -132,159 +110,7 @@ Swal.fire({
 <div class="container" style="font-family: 'Prompt', sans-serif">
     <div class="row">
         <div class="d-xxl-flex">
-            <div class="col-xxl-3 mb-xxl-3 mt-5">
-                <div class="card">
-                    <?php if($result->num_rows >= 1):?>
-                    <?php foreach ($dataTampung as $tampung) :?>
-                    <div class="card-header bg-primary">
-                        <h5 class="text-center text-white pt-2 col-12 btn-outline-primary">
-                            Edit Prioritas
-                        </h5>
-                    </div>
-                    <form method="post" action="">
-                        <div class="card-body">
-                            <div class="mb-3 mt-3">
-                                <input type="hidden" value="<?=$tampung['id'];?>" name="id_tampung">
-                                <label for="prioritas_1" class="form-label">Prioritas 1</label>
-                                <select class="form-select" id="prioritas_1" name="prioritas_1"
-                                    aria-label="Default select example">
-                                    <option value="">-- Pilih prioritas 1 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option <?= $tampung['prio1'] == $kriteria ? 'selected':''?>
-                                        value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <div class="mb-3 mt-3">
-                                <label for="prioritas_2" class="form-label">Prioritas 2</label>
-                                <select class="form-select" id="prioritas_2" name="prioritas_2">
-                                    <option value="">-- Pilih prioritas 2 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option <?= $tampung['prio2'] == $kriteria ? 'selected':''?>
-                                        value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <div class="mb-3 mt-3">
-                                <label for="prioritas_3" class="form-label">Prioritas 3</label>
-                                <select class="form-select" id="prioritas_3" name="prioritas_3">
-                                    <option value="">-- Pilih prioritas 3 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option <?= $tampung['prio3'] == $kriteria ? 'selected':''?>
-                                        value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <div class="mb-3 mt-3">
-                                <label for="prioritas_4" class="form-label">Prioritas 4</label>
-                                <select class="form-select" id="prioritas_4" name="prioritas_4">
-                                    <option value="">-- Pilih prioritas 4 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option <?= $tampung['prio4'] == $kriteria ? 'selected':''?>
-                                        value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <div class="mb-3 mt-3">
-                                <label for="prioritas_5" class="form-label">Prioritas 5</label>
-                                <select class="form-select" id="prioritas_5" name="prioritas_5">
-                                    <option value="">-- Pilih prioritas 5 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option <?= $tampung['prio5'] == $kriteria ? 'selected':''?>
-                                        value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <button type="submit" name="edit" class="btn col-12 btn-outline-primary">
-                                Simpan
-                            </button>
-                        </div>
-                    </form>
-                    <?php endforeach;?>
-                    <?php endif;?>
-                    <?php if($result->num_rows <= 0):?>
-                    <div class="card-header bg-primary">
-                        <h5 class="text-center text-white pt-2 col-12 btn-outline-primary">
-                            Masukan Prioritas
-                        </h5>
-                    </div>
-                    <form method="post" action="">
-                        <div class="card-body">
-                            <div class="mb-3 mt-3">
-                                <label for="prioritas_1" class="form-label">Prioritas 1</label>
-                                <select class="form-select" id="prioritas_1" name="prioritas_1"
-                                    aria-label="Default select example">
-                                    <option value="">-- Pilih prioritas 1 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <div class="mb-3 mt-3">
-                                <label for="prioritas_2" class="form-label">Prioritas 2</label>
-                                <select class="form-select" id="prioritas_2" name="prioritas_2">
-                                    <option value="">-- Pilih prioritas 2 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <div class="mb-3 mt-3">
-                                <label for="prioritas_3" class="form-label">Prioritas 3</label>
-                                <select class="form-select" id="prioritas_3" name="prioritas_3">
-                                    <option value="">-- Pilih prioritas 3 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <div class="mb-3 mt-3">
-                                <label for="prioritas_4" class="form-label">Prioritas 4</label>
-                                <select class="form-select" id="prioritas_4" name="prioritas_4">
-                                    <option value="">-- Pilih prioritas 4 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <div class="mb-3 mt-3">
-                                <label for="prioritas_5" class="form-label">Prioritas 5</label>
-                                <select class="form-select" id="prioritas_5" name="prioritas_5">
-                                    <option value="">-- Pilih prioritas 5 --</option>
-                                    <?php foreach($dataKriteria as $kriteria):?>
-                                    <option value="<?=$kriteria;?>">
-                                        <?=$kriteria;?>
-                                    </option>
-                                    <?php endforeach;?>
-                                </select>
-                            </div>
-                            <button type="submit" name="simpan" class="btn col-12 btn-outline-primary">
-                                Simpan
-                            </button>
-                        </div>
-                    </form>
-                    <?php endif;?>
-                </div>
-            </div>
-            <div class="col-xxl-9 mt-5 ms-xxl-5">
+            <div class="col-xxl-12 mt-5 ms-xxl-1">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
                         DAFTAR PENILAIAN
@@ -302,7 +128,6 @@ Swal.fire({
                                         <th scope="col">Biaya</th>
                                         <th scope="col">Luas Kamar</th>
                                         <th scope="col">Keamanan</th>
-                                        <!-- <th scope="col">Aksi</th> -->
                                     </tr>
                                 </thead>
                                 <tbody class="table-group-divider">
@@ -315,12 +140,6 @@ Swal.fire({
                                         <td><?= $nilai['nama_C3']; ?></td>
                                         <td><?= $nilai['nama_C4']; ?></td>
                                         <td><?= $nilai['nama_C5']; ?></td>
-                                        <!-- <td>
-                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                data-bs-target="#edit<?=$nilai['id_alternatif'];?>">
-                                                Edit
-                                            </button>
-                                        </td> -->
                                     </tr>
                                     <?php endforeach;?>
                                 </tbody>

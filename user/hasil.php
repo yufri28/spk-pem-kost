@@ -8,7 +8,7 @@ $id_user = $_SESSION['id_user'];
 $selectBobot = $koneksi->query("SELECT * FROM bobot_kriteria WHERE f_id_user='$id_user'");
 
 if(mysqli_num_rows($selectBobot) <= 0){
-     $_SESSION['error-bobot'] = 'Harap mengisi data penilaian terlebih dahulu!';
+     $_SESSION['error-bobot'] = 'Harap mengisi data bobot kriteria terlebih dahulu!';
 }
 // $dataBobot = $koneksi->query("SELECT * FROM bobot_kriteria");
 // $bobot = mysqli_fetch_assoc($dat);
@@ -353,7 +353,7 @@ Swal.fire({
     confirmButtonText: 'OK'
 }).then(function(result) {
     if (result.isConfirmed) {
-        window.location.href = './penilaian.php';
+        window.location.href = './kriteria.php';
     }
 });
 </script>
