@@ -7,75 +7,33 @@ require_once './functions/kriteria.php';
 $id_user = $_SESSION['id_user'];
 
 if(isset($_POST['simpan'])){
-    $prioritas1 = $_POST['prioritas_1'];
-    $prioritas2 = $_POST['prioritas_2'];
-    $prioritas3 = $_POST['prioritas_3'];
-    $prioritas4 = $_POST['prioritas_4'];
-    $prioritas5 = $_POST['prioritas_5'];
-
-    $dataTampung = [
-        $prioritas1,$prioritas2,$prioritas3,$prioritas4,$prioritas5
+    $id_kriteria = $_POST['id_kriteria'];
+    $nama_kriteria = $_POST['nama_kriteria'];
+    $jenis_kriteria = $_POST['jenis_kriteria'];
+    $dataKriteria = [
+       "id_kriteria" => $id_kriteria,
+       "nama_kriteria" => $nama_kriteria,
+       "jenis_kriteria" => $jenis_kriteria
     ];
-    $dataBobotKriteria = [
-        $prioritas1 => 0.3,
-        $prioritas2 => 0.2,
-        $prioritas3 => 0.2,
-        $prioritas4 => 0.2,
-        $prioritas5 => 0.1,
-    ];
-    $Kriteria->tambahTampung($dataTampung, $id_user);
-    $tambahBobotKriteria = $Kriteria->tambahBobotKriteria($dataBobotKriteria, $id_user);
+    $Kriteria->tambahKriteria($dataKriteria);
 }
 if(isset($_POST['edit'])){
-    $id = $_POST['id_tampung'];
-    $id_bobot = $_POST['id_bobot'];
-    $prioritas1 = $_POST['prioritas_1'];
-    $prioritas2 = $_POST['prioritas_2'];
-    $prioritas3 = $_POST['prioritas_3'];
-    $prioritas4 = $_POST['prioritas_4'];
-    $prioritas5 = $_POST['prioritas_5'];
-    $dataTampung = [
-        $prioritas1,$prioritas2,$prioritas3,$prioritas4,$prioritas5
+    $id_kriteria = $_POST['id_kriteria'];
+    $nama_kriteria = $_POST['nama_kriteria'];
+    $jenis_kriteria = $_POST['jenis_kriteria'];
+    $dataKriteria = [
+       "id_kriteria" => $id_kriteria,
+       "nama_kriteria" => $nama_kriteria,
+       "jenis_kriteria" => $jenis_kriteria
     ];
-    $dataBobotKriteria = [
-        $prioritas1 => 0.3,
-        $prioritas2 => 0.2,
-        $prioritas3 => 0.2,
-        $prioritas4 => 0.2,
-        $prioritas5 => 0.1,
-    ];
-    $tambahBobotKriteria = $Kriteria->editBobotKriteria($id_bobot,$dataBobotKriteria);
-    $Kriteria->editTampung($id,$dataTampung);
+    $Kriteria->editKriteria($dataKriteria);
 }
-
+if(isset($_POST['hapus'])){
+    $id_kriteria = $_POST['id_kriteria'];
+    $Kriteria->hapusKriteria($id_kriteria);
+}
 $data_Kriteria = $Kriteria->getKriteria();
-$id_bobot = mysqli_fetch_assoc($data_Kriteria);
-$dataKriteria = [
-    "Fasilitas", "Jarak", "Biaya", "Luas Kamar", "Keamanan"
-];
-
-
-// $stmt = $koneksi->prepare("SELECT * FROM bobot_kriteria WHERE f_id_user=?");
-// $stmt->bind_param("i", $id_user);
-// $stmt->execute();
-// $result = $stmt->get_result();
-// $stmt->close();
-
-$dataTampung = $koneksi->query("SELECT * FROM tabel_tampung WHERE f_id_user='$id_user'");
-
-
 ?>
-<!-- Tampilkan pesan sukses atau error jika sesi tersebut diatur -->
-<?php if (mysqli_num_rows($data_Kriteria) <= 0): ?>
-<script>
-Swal.fire({
-    title: 'Pesan',
-    text: 'Pililah kriteria sesuai prioritas yang Anda inginkan pada kos, seperti Fasilitas, Jarak, Biaya, Luas Kamar, dan Keamanan. Misalnya Anda ingin mencari kos dengan meprioritaskan Fasilitas pada prioritas 1, Biaya pada prioritas 2, Luas Kamar pada prioritas 3, Keamanan pada prioritas 4 dan Jarak pada prioritas 5. Dari pilihan prioritas tersebut, sistem akan merekomendasikan kos dengan kriteria kos dengan Fasilitas paling bagus kemudian diikuti dengan kriteria lainnya.',
-    icon: 'warning',
-    confirmButtonText: 'Paham'
-});
-</script>
-<?php endif; ?>
 <?php if (isset($_SESSION['success'])): ?>
 <script>
 Swal.fire({
@@ -103,6 +61,7 @@ Swal.fire({
 <div class="container" style="font-family: 'Prompt', sans-serif">
     <div class="row">
         <div class="d-xxl-flex">
+            <?php if(mysqli_num_rows($data_Kriteria) < 5) :?>
             <div class="col-xxl-3 mb-xxl-3 mt-5">
                 <div class="card">
                     <div class="card-header bg-primary">
@@ -113,18 +72,18 @@ Swal.fire({
                     <form method="post" action="">
                         <div class="card-body">
                             <div class="mb-3 mt-3">
-                                <label for="nama_kriteria" class="form-label">Kode Kriteria</label>
-                                <input class="form-control" name="nama_kriteria" type="text" placeholder="Kode Kriteria"
-                                    aria-label="default input example">
+                                <label for="id_kriteria" class="form-label">Kode Kriteria</label>
+                                <input class="form-control" maxlength="2" required name="id_kriteria" type="text"
+                                    placeholder="Kode Kriteria" aria-label="default input example">
                             </div>
                             <div class="mb-3 mt-3">
                                 <label for="nama_kriteria" class="form-label">Nama Kriteria</label>
-                                <input class="form-control" name="nama_kriteria" type="text" placeholder="Nama Kriteria"
-                                    aria-label="default input example">
+                                <input class="form-control" required name="nama_kriteria" type="text"
+                                    placeholder="Nama Kriteria" aria-label="default input example">
                             </div>
                             <div class="mb-3 mt-3">
-                                <label for="nama_kriteria" class="form-label">Nama Kriteria</label>
-                                <select class="form-select" id="prioritas_1" name="prioritas_1"
+                                <label for="jenis_kriteria" class="form-label">Nama Kriteria</label>
+                                <select class="form-select" required id="jenis_kriteria" name="jenis_kriteria"
                                     aria-label="Default select example">
                                     <option value="">-- Pilih Jenis --</option>
                                     <option value="Benefit">Benefit</option>
@@ -139,7 +98,8 @@ Swal.fire({
                     </form>
                 </div>
             </div>
-            <div class="col-xxl-9 mt-5 ms-xxl-5">
+            <?php endif;?>
+            <div class="<?= mysqli_num_rows($data_Kriteria) < 5 ? "":"col-xxl-12 ms-xxl-2"; ?> mt-5">
                 <div class="card">
                     <div class="card-header bg-primary text-white">DAFTAR KRITERIA</div>
                     <div class="card-body">
@@ -151,7 +111,7 @@ Swal.fire({
                                         <th scope="col">Kode</th>
                                         <th scope="col">Nama</th>
                                         <th scope="col">Sifat</th>
-                                        <th scope="col">Aksi</th>
+                                        <!-- <th scope="col">Aksi</th> -->
                                     </tr>
                                 </thead>
                                 <tbody class="table-group-divider">
@@ -162,7 +122,16 @@ Swal.fire({
                                         <th scope="row"><?=$kriteria['id_kriteria'];?></th>
                                         <td><?=$kriteria['nama_kriteria'];?></td>
                                         <td><?=$kriteria['jenis_kriteria'];?></td>
-                                        <td>Hapus</td>
+                                        <!-- <td>
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#edit<?=$kriteria['id_kriteria'];?>">
+                                                Edit
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                                data-bs-target="#hapus<?=$kriteria['id_kriteria'];?>">
+                                                Hapus
+                                            </button>
+                                        </td> -->
                                     </tr>
                                     <?php endforeach;?>
                                 </tbody>
@@ -173,77 +142,85 @@ Swal.fire({
             </div>
         </div>
     </div>
+
+    <?php foreach ($data_Kriteria as $key => $kriteria):?>
+    <div class="modal fade" id="edit<?=$kriteria['id_kriteria'];?>" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Kriteria</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div class="mb-3 mt-3">
+                                <!-- <label for="id_kriteria" class="form-label">Kode Kriteria</label> -->
+                                <input class="form-control" value="<?=$kriteria['id_kriteria'];?>" required
+                                    name="id_kriteria" type="hidden" placeholder="Kode Kriteria"
+                                    aria-label="default input example" maxlength="2">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3 mt-3">
+                                <label for="nama_kriteria" class="form-label">Nama Kriteria</label>
+                                <input class="form-control" value="<?=$kriteria['nama_kriteria'];?>" required
+                                    name="nama_kriteria" type="text" placeholder="Nama Kriteria"
+                                    aria-label="default input example">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3 mt-3">
+                                <label for="jenis_kriteria" class="form-label">Nama Kriteria</label>
+                                <select class="form-select" required id="jenis_kriteria" name="jenis_kriteria"
+                                    aria-label="Default select example">
+                                    <option value="">-- Pilih Jenis --</option>
+                                    <option <?=$kriteria['jenis_kriteria'] == "Benefit" ? "selected":"";?>
+                                        value="Benefit">Benefit</option>
+                                    <option <?=$kriteria['jenis_kriteria'] == "Cost" ? "selected":"";?> value="Cost">
+                                        Cost</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" name="edit" class="btn btn-outline-primary">
+                                Simpan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php endforeach;?>
+    <?php foreach ($data_Kriteria as $kriteria):?>
+    <div class="modal fade" id="hapus<?=$kriteria['id_kriteria'];?>" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Kriteria</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <input type="hidden" name="id_kriteria" value="<?=$kriteria['id_kriteria'];?>">
+                    <div class="modal-body">
+                        <p>Anda yakin ingin menghapus kriteria <strong>
+                                <?=$kriteria['nama_kriteria'];?></strong> ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" name="hapus" class="btn btn-outline-primary">
+                            Hapus
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php endforeach;?>
     <?php 
-require_once './footer.php';
+    require_once './footer.php';
 ?>
-
-    <script>
-    $(document).ready(function() {
-        $("#prioritas_1").change(function() {
-            var prioritas_1 = $("#prioritas_1").val();
-            $.ajax({
-                type: 'POST',
-                url: "./functions/pilihan.php",
-                data: {
-                    prioritas_1: [prioritas_1]
-                },
-                cache: false,
-                success: function(msg) {
-                    $("#prioritas_2").html(msg);
-                }
-            });
-        });
-
-        $("#prioritas_2").change(function() {
-            var prioritas_1 = $("#prioritas_1").val();
-            var prioritas_2 = $("#prioritas_2").val();
-            $.ajax({
-                type: 'POST',
-                url: "./functions/pilihan.php",
-                data: {
-                    prioritas_2: [prioritas_1, prioritas_2]
-                },
-                cache: false,
-                success: function(msg) {
-                    $("#prioritas_3").html(msg);
-                }
-            });
-        });
-
-        $("#prioritas_3").change(function() {
-            var prioritas_1 = $("#prioritas_1").val();
-            var prioritas_2 = $("#prioritas_2").val();
-            var prioritas_3 = $("#prioritas_3").val();
-            $.ajax({
-                type: 'POST',
-                url: "./functions/pilihan.php",
-                data: {
-                    prioritas_3: [prioritas_1, prioritas_2, prioritas_3]
-                },
-                cache: false,
-                success: function(msg) {
-                    $("#prioritas_4").html(msg);
-                }
-            });
-            $("#prioritas_4").change(function() {
-                var prioritas_1 = $("#prioritas_1").val();
-                var prioritas_2 = $("#prioritas_2").val();
-                var prioritas_3 = $("#prioritas_3").val();
-                var prioritas_4 = $("#prioritas_4").val();
-                $.ajax({
-                    type: 'POST',
-                    url: "./functions/pilihan.php",
-                    data: {
-                        prioritas_4: [prioritas_1, prioritas_2, prioritas_3,
-                            prioritas_4
-                        ]
-                    },
-                    cache: false,
-                    success: function(msg) {
-                        $("#prioritas_5").html(msg);
-                    }
-                });
-            });
-        });
-    });
-    </script>

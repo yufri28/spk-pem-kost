@@ -33,7 +33,7 @@
                 JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
                 JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
                 JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
-                GROUP BY a.nama_alternatif;");
+                GROUP BY a.nama_alternatif ORDER BY a.id_alternatif DESC;");
         }
 
         public function tambahAlternatif($dataAlternatif,$dataSubKriteria)

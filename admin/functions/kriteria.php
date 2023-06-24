@@ -13,105 +13,51 @@ class Kriteria{
     {
         return $this->db->query("SELECT * FROM `kriteria`");
     }
-    public function tambahBobotKriteria($dataPenilaian,$id_user)
+    public function tambahKriteria($dataKriteria)
     {
-        $C1 = 0;
-        $C2 = 0;
-        $C3 = 0;
-        $C4 = 0;
-        $C5 = 0;
-        foreach ($dataPenilaian as $key => $value) {
-           switch ($key) {
-            case "Fasilitas":
-                $C1 = $value;
-                break;
-            case "Jarak":
-                $C2 = $value;
-                break;
-            case "Biaya":
-                $C3 = $value;
-                break;
-            case "Luas Kamar":
-                $C4 = $value;
-                break;
-            case "Keamanan":
-                $C5 = $value;
-                break;
-           }
-        }
-        $stmt = $this->db->prepare("SELECT * FROM bobot_kriteria WHERE f_id_user=?");
-        $stmt->bind_param("i", $id_user);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows <= 0) {
-            $stmtInsert = $this->db->query("INSERT INTO bobot_kriteria (id_bobot, C1, C2, C3, C4, C5, f_id_user) VALUES (NULL, '$C1', '$C2', '$C3', '$C4', '$C5', '$id_user')");
-            if($stmtInsert){
+        $cek = $this->db->query("SELECT * FROM kriteria WHERE id_kriteria='".$dataKriteria['id_kriteria']."'");
+        if (mysqli_num_rows($cek) > 0) {
+            return $_SESSION['error'] = 'Kode Kriteria sudah ada!';
+        } else{
+            $stmtInsert = $this->db->prepare("INSERT INTO kriteria(id_kriteria,nama_kriteria,jenis_kriteria) VALUES (?,?,?)");
+            $stmtInsert->bind_param("sss",$dataKriteria['id_kriteria'],$dataKriteria['nama_kriteria'],$dataKriteria['jenis_kriteria']);
+            $stmtInsert->execute();
+            if ($stmtInsert->affected_rows > 0) {
                 return $_SESSION['success'] = 'Data berhasil ditambahkan!';
-            }else{
+            } else{
                 return $_SESSION['error'] = 'Terjadi kesalahan dalam menyimpan data.';
             }
-         } 
-         else {
-             return $_SESSION['error'] = 'Data sudah ada!';
-         }
-         $stmt->close();
-    }
-    public function editBobotKriteria($id_bobot,$dataPenilaian)
-    {
-        $C1 = 0;
-        $C2 = 0;
-        $C3 = 0;
-        $C4 = 0;
-        $C5 = 0;
-        foreach ($dataPenilaian as $key => $value) {
-           switch ($key) {
-            case "Fasilitas":
-                $C1 = $value;
-                break;
-            case "Jarak":
-                $C2 = $value;
-                break;
-            case "Biaya":
-                $C3 = $value;
-                break;
-            case "Luas Kamar":
-                $C4 = $value;
-                break;
-            case "Keamanan":
-                $C5 = $value;
-                break;
-           }
         }
-        $update = $this->db->query("UPDATE bobot_kriteria SET C1=$C1,C2=$C2,C3=$C3,C4=$C4,C5=$C5 WHERE id_bobot='$id_bobot'");
-        if($update){
+        
+        $stmtInsert->close();
+    }
+    public function editKriteria($dataKriteria)
+    {
+        $stmtUpdate = $this->db->prepare("UPDATE kriteria SET nama_kriteria=?,jenis_kriteria=? WHERE id_kriteria=?");
+        $stmtUpdate->bind_param("sss",$dataKriteria['nama_kriteria'],$dataKriteria['jenis_kriteria'],$dataKriteria['id_kriteria']);
+        $stmtUpdate->execute();
+        if ($stmtUpdate->affected_rows > 0) {
             return $_SESSION['success'] = 'Data berhasil diedit!';
-        }else{
-            return $_SESSION['error'] = 'Terjadi kesalahan dalam menyimpan data.';
+        } else{
+            return $_SESSION['error'] = 'Terjadi kesalahan dalam mengedit data.';
         }
+        $stmtUpdate->close();
+        
     }
-    public function tambahTampung($dataTampung,$id_user)
+    public function hapusKriteria($idKriteria)
     {
-        $C1 = $dataTampung[0];
-        $C2 =  $dataTampung[1];
-        $C3 =  $dataTampung[2];
-        $C4 =  $dataTampung[3];
-        $C5 =  $dataTampung[4];
-        $this->db->query("INSERT INTO tabel_tampung (id, prio1, prio2, prio3, prio4, prio5, f_id_user) VALUES (NULL, '$C1', '$C2', '$C3', '$C4', '$C5', '$id_user')");
+        $stmtDelete = $this->db->prepare("DELETE FROM kriteria WHERE id_kriteria=?");
+        $stmtDelete->bind_param("s",$idKriteria);
+        $stmtDelete->execute();
+        if ($stmtDelete->affected_rows > 0) {
+            return $_SESSION['success'] = 'Data berhasil dihapus!';
+        } else{
+            return $_SESSION['error'] = 'Terjadi kesalahan dalam menghapus data.';
+        }
+        $stmtDelete->close();
+        
     }
-    public function editTampung($id,$dataTampung)
-    {
-        $C1 = $dataTampung[0];
-        $C2 =  $dataTampung[1];
-        $C3 =  $dataTampung[2];
-        $C4 =  $dataTampung[3];
-        $C5 =  $dataTampung[4];
-
-        $this->db->query("UPDATE tabel_tampung SET prio1='$C1',prio2='$C2',prio3='$C3',prio4='$C4',prio5='$C5' WHERE id='$id'");
-    }
-
 }
-
-
 $Kriteria = new Kriteria();
 
 ?>

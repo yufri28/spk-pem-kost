@@ -56,12 +56,10 @@ if(!isset($_SESSION['login']) && $_SESSION['login'] != true){
                         href="alternatif.php">Alternatif</a>
                     <a class="nav-link <?=$_SESSION['menu'] == 'kriteria' ? 'active':'';?>"
                         href="kriteria.php">Kriteria</a>
-                    <a class="nav-link <?=$_SESSION['menu'] == 'sub-kriteria' ? 'active':'';?>" href="#">Sub
+                    <a class="nav-link <?=$_SESSION['menu'] == 'sub-kriteria' ? 'active':'';?>"
+                        href="sub_kriteria.php">Sub
                         Kriteria</a>
-                    <a class="nav-link <?=$_SESSION['menu'] == 'bobot' ? 'active':'';?>" href="#">Bobot</a>
-                    <a class="nav-link <?=$_SESSION['menu'] == 'penilaian' ? 'active':'';?>"
-                        href="penilaian.php">Penilaian</a>
-                    <a class="nav-link <?=$_SESSION['menu'] == 'hasil' ? 'active':'';?>" href="hasil.php">Hasil</a>
+                    <a class="nav-link <?=$_SESSION['menu'] == 'users' ? 'active':'';?>" href="users.php">User</a>
                     <a class="nav-link <?=$_SESSION['menu'] == 'hasil' ? 'active':'';?>"
                         href="../auth/logout.php">Logout</a>
                 </div>
