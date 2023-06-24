@@ -58,7 +58,7 @@ Swal.fire({
 <?php unset($_SESSION['error']); // Menghapus session setelah ditampilkan ?>
 <?php endif; ?>
 
-<div class="container" style="font-family: 'Prompt', sans-serif">
+<div class="container mb-5 pt-5" style="font-family: 'Prompt', sans-serif">
     <div class="row">
         <div class="d-xxl-flex">
             <?php if(mysqli_num_rows($data_Kriteria) < 5) :?>
@@ -220,7 +220,9 @@ Swal.fire({
             </div>
         </div>
     </div>
-    <?php endforeach;?>
-    <?php 
+</div>
+
+<?php endforeach;?>
+<?php 
     require_once './footer.php';
 ?>

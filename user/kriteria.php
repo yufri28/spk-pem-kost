@@ -288,77 +288,78 @@ Swal.fire({
             </div>
         </div>
     </div>
-    <?php 
+</div>
+<?php 
 require_once './../includes/footer.php';
 ?>
 
-    <script>
-    $(document).ready(function() {
-        $("#prioritas_1").change(function() {
-            var prioritas_1 = $("#prioritas_1").val();
-            $.ajax({
-                type: 'POST',
-                url: "./functions/pilihan.php",
-                data: {
-                    prioritas_1: [prioritas_1]
-                },
-                cache: false,
-                success: function(msg) {
-                    $("#prioritas_2").html(msg);
-                }
-            });
+<script>
+$(document).ready(function() {
+    $("#prioritas_1").change(function() {
+        var prioritas_1 = $("#prioritas_1").val();
+        $.ajax({
+            type: 'POST',
+            url: "./functions/pilihan.php",
+            data: {
+                prioritas_1: [prioritas_1]
+            },
+            cache: false,
+            success: function(msg) {
+                $("#prioritas_2").html(msg);
+            }
         });
+    });
 
-        $("#prioritas_2").change(function() {
-            var prioritas_1 = $("#prioritas_1").val();
-            var prioritas_2 = $("#prioritas_2").val();
-            $.ajax({
-                type: 'POST',
-                url: "./functions/pilihan.php",
-                data: {
-                    prioritas_2: [prioritas_1, prioritas_2]
-                },
-                cache: false,
-                success: function(msg) {
-                    $("#prioritas_3").html(msg);
-                }
-            });
+    $("#prioritas_2").change(function() {
+        var prioritas_1 = $("#prioritas_1").val();
+        var prioritas_2 = $("#prioritas_2").val();
+        $.ajax({
+            type: 'POST',
+            url: "./functions/pilihan.php",
+            data: {
+                prioritas_2: [prioritas_1, prioritas_2]
+            },
+            cache: false,
+            success: function(msg) {
+                $("#prioritas_3").html(msg);
+            }
         });
+    });
 
-        $("#prioritas_3").change(function() {
+    $("#prioritas_3").change(function() {
+        var prioritas_1 = $("#prioritas_1").val();
+        var prioritas_2 = $("#prioritas_2").val();
+        var prioritas_3 = $("#prioritas_3").val();
+        $.ajax({
+            type: 'POST',
+            url: "./functions/pilihan.php",
+            data: {
+                prioritas_3: [prioritas_1, prioritas_2, prioritas_3]
+            },
+            cache: false,
+            success: function(msg) {
+                $("#prioritas_4").html(msg);
+            }
+        });
+        $("#prioritas_4").change(function() {
             var prioritas_1 = $("#prioritas_1").val();
             var prioritas_2 = $("#prioritas_2").val();
             var prioritas_3 = $("#prioritas_3").val();
+            var prioritas_4 = $("#prioritas_4").val();
             $.ajax({
                 type: 'POST',
                 url: "./functions/pilihan.php",
                 data: {
-                    prioritas_3: [prioritas_1, prioritas_2, prioritas_3]
+                    prioritas_4: [prioritas_1, prioritas_2, prioritas_3,
+                        prioritas_4
+                    ]
                 },
                 cache: false,
                 success: function(msg) {
-                    $("#prioritas_4").html(msg);
+                    $("#prioritas_5").html(msg);
                 }
-            });
-            $("#prioritas_4").change(function() {
-                var prioritas_1 = $("#prioritas_1").val();
-                var prioritas_2 = $("#prioritas_2").val();
-                var prioritas_3 = $("#prioritas_3").val();
-                var prioritas_4 = $("#prioritas_4").val();
-                $.ajax({
-                    type: 'POST',
-                    url: "./functions/pilihan.php",
-                    data: {
-                        prioritas_4: [prioritas_1, prioritas_2, prioritas_3,
-                            prioritas_4
-                        ]
-                    },
-                    cache: false,
-                    success: function(msg) {
-                        $("#prioritas_5").html(msg);
-                    }
-                });
             });
         });
     });
-    </script>
+});
+</script>

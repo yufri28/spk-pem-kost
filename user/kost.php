@@ -107,7 +107,7 @@ Swal.fire({
 </script>
 <?php unset($_SESSION['error']); // Menghapus session setelah ditampilkan ?>
 <?php endif; ?>
-<div class="container" style="font-family: 'Prompt', sans-serif">
+<div class="container mb-5 pt-5" style="font-family: 'Prompt', sans-serif">
     <div class="row">
         <div class="d-xxl-flex">
             <div class="col-xxl-12 mt-5 ms-xxl-1">
