@@ -39,7 +39,7 @@ class Sub_Kriteria{
         $stmtUpdateSub = $this->db->prepare("UPDATE sub_kriteria  SET nama_sub_kriteria=?,bobot_sub_kriteria=?,f_id_kriteria=? WHERE id_sub_kriteria=?");
         $stmtUpdateSub->bind_param("sisi", $dataSubKiteria['nama_sub_kriteria'],$dataSubKiteria['bobot_sub_kriteria'],$dataSubKiteria['id_kriteria'],$dataSubKiteria['id_sub_kriteria']);
         $stmtUpdateSub->execute();
-        if ($stmtUpdateSub->affected_rows > 0) {
+        if ($stmtUpdateSub) {
             return $_SESSION['success'] = 'Data berhasil diedit!';
         } else {
             return $_SESSION['error'] = 'Terjadi kesalahan dalam mengedit data.';
