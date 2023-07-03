@@ -5,7 +5,10 @@ global $conn;
 if(!isset($_SESSION['login']) && $_SESSION['login'] != true){
     header("Location: ../index.php");
 }
-
+else if($_SESSION['role'] != 0){
+    header("Location: ../404.php");
+    exit;
+}
 
 ?>
 <!DOCTYPE html>
