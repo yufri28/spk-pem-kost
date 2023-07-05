@@ -48,7 +48,7 @@ GROUP BY a.nama_alternatif;");
 <body>
     <div class="container">
         <div class="logo-section p-2 d-flex">
-            <h3 class="mt-2" style="font-family: 'Righteous', cursive">SPK PEMILIHAN KOST</h3>
+            <h3 class="mt-2" style="font-family: 'Righteous' cursive">SPK PEMILIHAN KOST</h3>
             <div class="navbar-nav ms-auto">
                 <a class="btn btn-primary mt-2 px-4 py-1 btn-sm" href="./auth/login.php">Login</a>
             </div>
