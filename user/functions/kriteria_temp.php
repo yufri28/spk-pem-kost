@@ -9,25 +9,36 @@ class Kriteria{
         $this->db = connectDatabase();
     }
 
-    public function getKriteriaByUser($id_user)
+    public function getKriteria($id_user)
     {
         return $this->db->query("SELECT * FROM `kriteria` JOIN bobot_kriteria ON bobot_kriteria.f_id_user = '$id_user'");
     }
-    public function getKriteria()
+    public function tambahBobotKriteria($dataPenilaian,$id_user)
     {
-        return $this->db->query("SELECT * FROM `kriteria`");
-    }
-    public function getBobotKriteria($id_user=null)
-    {
-        return $this->db->query("SELECT * FROM bobot_kriteria WHERE f_id_user='$id_user'");
-    }
-    public function tambahBobotKriteria($dataBobotKriteria,$id_user)
-    {
-        $C1 = $dataBobotKriteria[0];
-        $C2 = $dataBobotKriteria[1];
-        $C3 = $dataBobotKriteria[2];
-        $C4 = $dataBobotKriteria[3];
-        $C5 = $dataBobotKriteria[4];
+        $C1 = 0;
+        $C2 = 0;
+        $C3 = 0;
+        $C4 = 0;
+        $C5 = 0;
+        foreach ($dataPenilaian as $key => $value) {
+           switch ($key) {
+            case "Fasilitas":
+                $C1 = $value;
+                break;
+            case "Jarak":
+                $C2 = $value;
+                break;
+            case "Biaya":
+                $C3 = $value;
+                break;
+            case "Luas Kamar":
+                $C4 = $value;
+                break;
+            case "Keamanan":
+                $C5 = $value;
+                break;
+           }
+        }
         $stmt = $this->db->prepare("SELECT * FROM bobot_kriteria WHERE f_id_user=?");
         $stmt->bind_param("i", $id_user);
         $stmt->execute();
@@ -45,14 +56,32 @@ class Kriteria{
          }
          $stmt->close();
     }
-    public function editBobotKriteria($id_bobot=null,$dataBobotKriteria=null)
+    public function editBobotKriteria($id_bobot,$dataPenilaian)
     {
-        $C1 = $dataBobotKriteria[0];
-        $C2 = $dataBobotKriteria[1];
-        $C3 = $dataBobotKriteria[2];
-        $C4 = $dataBobotKriteria[3];
-        $C5 = $dataBobotKriteria[4];
-        
+        $C1 = 0;
+        $C2 = 0;
+        $C3 = 0;
+        $C4 = 0;
+        $C5 = 0;
+        foreach ($dataPenilaian as $key => $value) {
+           switch ($key) {
+            case "Fasilitas":
+                $C1 = $value;
+                break;
+            case "Jarak":
+                $C2 = $value;
+                break;
+            case "Biaya":
+                $C3 = $value;
+                break;
+            case "Luas Kamar":
+                $C4 = $value;
+                break;
+            case "Keamanan":
+                $C5 = $value;
+                break;
+           }
+        }
         $update = $this->db->query("UPDATE bobot_kriteria SET C1=$C1,C2=$C2,C3=$C3,C4=$C4,C5=$C5 WHERE id_bobot='$id_bobot'");
         if($update){
             return $_SESSION['success'] = 'Data berhasil diedit!';

@@ -114,74 +114,74 @@ if(mysqli_num_rows($selectBobot) <= 0){
 // );
 $hitung = $koneksi->query(
     "SELECT a.nama_alternatif, a.id_alternatif, a.alamat, a.latitude, a.longitude,
-    MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) AS C1,
-    MAX(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) AS C2,
-    MAX(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) AS C3,
-    MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) AS C4,
-    MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) AS C5,
-    MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) 
+    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+    MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+    MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
+    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
     / 
-    (SELECT MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) 
+    (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
      JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C1,
-    (SELECT MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) 
+    (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) AS div_C2,
-    (SELECT MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) 
+     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS div_C2,
+    (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) AS div_C3,
-    MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) 
+     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS div_C3,
+    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
     / 
-    (SELECT MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) 
+    (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
      JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C4,
-    MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) 
+    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
     / 
-    (SELECT MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) 
+    (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
      JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C5,
-     MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.nama_sub_kriteria END) AS nama_C1,
-     MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.nama_sub_kriteria END) AS nama_C2,
-     MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) AS nama_C3,
-     MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.nama_sub_kriteria END) AS nama_C4,
-     MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.nama_sub_kriteria END) AS nama_C5,
-     ((MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) 
+     MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.nama_sub_kriteria END) AS nama_C1,
+     MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.nama_sub_kriteria END) AS nama_C2,
+     MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS nama_C3,
+     MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.nama_sub_kriteria END) AS nama_C4,
+     MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.nama_sub_kriteria END) AS nama_C5,
+     ((MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
         / 
-        (SELECT MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
          JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * (SELECT C1 FROM bobot_kriteria bk WHERE bk.f_id_user = $id_user )) +
-        ((SELECT MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) 
+        ((SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) * (SELECT C2 FROM bobot_kriteria bk WHERE bk.f_id_user = $id_user )) +
-        ((SELECT MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) 
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) * (SELECT C2 FROM bobot_kriteria bk WHERE bk.f_id_user = $id_user )) +
+        ((SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) * (SELECT C3 FROM bobot_kriteria bk WHERE bk.f_id_user = $id_user )) +
-        (MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) 
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) * (SELECT C3 FROM bobot_kriteria bk WHERE bk.f_id_user = $id_user )) +
+        (MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
         / 
-        (SELECT MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
          JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * (SELECT C4 FROM bobot_kriteria bk WHERE bk.f_id_user = $id_user )) +
-        (MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) 
+        (MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
         / 
-        (SELECT MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
@@ -193,11 +193,11 @@ $hitung = $koneksi->query(
     GROUP BY a.nama_alternatif
     UNION ALL
     SELECT 'min_max', NULL, NULL, NULL, NULL,
-    MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) AS C1,
-    MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) AS C2,
-    MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) AS C3,
-    MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) AS C4,
-    MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) AS C5,
+    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+    MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+    MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
     NULL AS div_C1,
     NULL AS div_C2,
     NULL AS div_C3,
@@ -218,11 +218,11 @@ $hitung = $koneksi->query(
 // Matriks Keputusan
 $matriksKeputusan = $koneksi->query(
     "SELECT a.nama_alternatif,
-    MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) AS C1,
-    MAX(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) AS C2,
-    MAX(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) AS C3,
-    MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) AS C4,
-    MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) AS C5
+    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+    MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+    MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5
     FROM alternatif a
     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
@@ -230,11 +230,11 @@ $matriksKeputusan = $koneksi->query(
     GROUP BY a.nama_alternatif
     UNION ALL
     SELECT 'min_max',
-        MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) AS C1,
-        MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) AS C2,
-        MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) AS C3,
-        MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) AS C4,
-        MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) AS C5
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5
     FROM alternatif a
     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
@@ -243,33 +243,33 @@ $matriksKeputusan = $koneksi->query(
 
 $matriksTernomalisasi =$koneksi->query(
     "SELECT a.nama_alternatif,
-    MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) 
+    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
     / 
-    (SELECT MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN sk.bobot_sub_kriteria END) 
+    (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
      JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C1,
-    (SELECT MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) 
+    (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN sk.bobot_sub_kriteria END) AS div_C2,
-    (SELECT MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) 
+     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS div_C2,
+    (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN sk.bobot_sub_kriteria END) AS div_C3,
-    MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) 
+     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS div_C3,
+    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
     / 
-    (SELECT MAX(CASE WHEN k.nama_kriteria = 'Luas Kamar' THEN sk.bobot_sub_kriteria END) 
+    (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
      JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C4,
-    MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) 
+    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
     / 
-    (SELECT MAX(CASE WHEN k.nama_kriteria = 'Keamanan' THEN sk.bobot_sub_kriteria END) 
+    (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
      FROM alternatif a
      JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
      JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
@@ -317,6 +317,7 @@ usort($tampungHasil, function($a, $b) {
 //         echo $item['id_alternatif'] . ": " . $item['nama_alternatif'] . ": " . $item['nilai_akhir'] . "<br>";
 //     endif;
 // }
+
 ?>
 
 <?php if (isset($_SESSION['success'])): ?>
@@ -363,36 +364,17 @@ Swal.fire({
 <div class="container" style="font-family: 'Prompt', sans-serif">
     <div class="row">
         <div class="d-xxl-flex">
-            <!-- <div class="col-xxl-3 mb-xxl-3 mt-5">
-                <div class="card">
-                    <div class="card-header bg-primary">
-                        <h5 class="text-center text-white pt-2 col-12 btn-outline-primary">
-                            Tambah Data
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3 mt-3">
-                            <label for="exampleFormControlInput1" class="form-label">Nama Kriteria</label>
-                            <input type="email" class="form-control" id="exampleFormControlInput1"
-                                placeholder="Nama Kriteria" />
+            <div class="col-xxl-12 mt-3 ms-xxl-6 mb-1">
+                <!-- <div class="card"> -->
+                <div class="col-12">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div id="mapid"></div>
                         </div>
-                        <div class="mb-3 mt-3">
-                            <label for="exampleFormControlInput1" class="form-label">Sifat Kriteria</label>
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected>-- Pilih Sifat Kriteria --</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                        <button type="button" class="btn col-12 btn-outline-primary">
-                            Simpan
-                        </button>
                     </div>
                 </div>
-            </div> -->
-            <div class="col-xxl-12 mt-5 ms-xxl-6 mb-1">
-                <div class="card">
+                <!-- </div> -->
+                <div class="card mt-2">
                     <div class="card-header bg-primary text-white">Hasil Perengkingan</div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -508,3 +490,40 @@ Swal.fire({
 <?php 
 require_once './../includes/footer.php';
 ?>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+var mymap = L.map('mapid').setView([-10.1746105, 123.6188371], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(mymap);
+
+<?php
+      usort($tampungHasil, function($a, $b) {
+          return $a['nilai_akhir'] <=> $b['nilai_akhir'];
+      });
+      $iconNumber = count($tampungHasil)-1; // Angka awal untuk ikon (misalnya 1)
+      foreach ($tampungHasil as $location) {
+        if ($location['latitude'] != '-' && $location['longitude'] != '-' && $location['nama_alternatif'] != 'min_max') {
+            echo "var marker = L.marker([" . $location['latitude'] . ", " . $location['longitude'] . "], {";
+            echo "  icon: L.divIcon({";
+            echo "    className: 'custom-icon',";
+            echo "    html: '<i class=\"fa fa-home\">".$iconNumber."</i>',"; // Menggunakan kelas 'fa' dan kelas angka sesuai dengan $iconNumber
+            echo "    iconSize: [40, 40],";
+            echo "    iconAnchor: [20, 40]";
+            echo "  })";
+            echo "}).addTo(mymap);";
+            echo "marker.bindPopup('<b>" .$iconNumber.'. '.$location['nama_alternatif'] . "</b><br>Fasilitas : " . $location['fasilitas'] . "<br>Jarak : " . $location['jarak'] . "<br>Biaya : " . $location['biaya'] . "<br>Luas Kamar : " . $location['luas_kamar'] . "<br>Keamanan : " . $location['keamanan'] . "').openPopup();";
+            $iconNumber--; // Tingkatkan angka untuk ikon berikutnya (jika ada)
+        }
+      }
+?>
+</script>
+<style>
+.custom-icon {
+    text-align: center;
+    color: #EB455F;
+    font-size: 16pt;
+    font-weight: bold;
+}
+</style>
