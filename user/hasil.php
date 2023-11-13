@@ -113,7 +113,7 @@ if(mysqli_num_rows($selectBobot) <= 0){
 //     WHERE kak.f_id_user = 1;"
 // );
 $hitung = $koneksi->query(
-    "SELECT a.nama_alternatif, a.id_alternatif, a.alamat, a.latitude, a.longitude,
+    "SELECT a.nama_alternatif, a.id_alternatif, a.alamat, a.latitude, a.longitude, a.jenis_kost,
     MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
     MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
     MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
@@ -192,7 +192,7 @@ $hitung = $koneksi->query(
     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
     GROUP BY a.nama_alternatif
     UNION ALL
-    SELECT 'min_max', NULL, NULL, NULL, NULL,
+    SELECT 'min_max', NULL, NULL, NULL, NULL, NULL,
     MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
     MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
     MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
@@ -302,6 +302,7 @@ $matriksTernomalisasi =$koneksi->query(
             'keamanan' => $value['nama_C5'],
             'latitude' => $value['latitude'],
             'longitude' => $value['longitude'],
+            'jenis_kost' => $value['jenis_kost'],
             'nilai_akhir' => $value['nilai_akhir']
         ];
     }
@@ -507,7 +508,16 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         if ($location['latitude'] != '-' && $location['longitude'] != '-' && $location['nama_alternatif'] != 'min_max') {
             echo "var marker = L.marker([" . $location['latitude'] . ", " . $location['longitude'] . "], {";
             echo "  icon: L.divIcon({";
-            echo "    className: 'custom-icon',";
+            if($location['jenis_kost'] == 'Campuran'){
+                echo "className: 'custom-icon-green',";
+            }elseif($location['jenis_kost'] == 'Laki-Laki')
+            {
+                echo "className: 'custom-icon-blue',";
+            } 
+            elseif($location['jenis_kost'] == 'Perempuan')
+            {
+                echo "className: 'custom-icon-campuran',";
+            }                
             echo "    html: '<i class=\"fa fa-home\">".$iconNumber."</i>',"; // Menggunakan kelas 'fa' dan kelas angka sesuai dengan $iconNumber
             echo "    iconSize: [40, 40],";
             echo "    iconAnchor: [20, 40]";
@@ -518,11 +528,55 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         }
       }
 ?>
+// Tambahkan legenda
+var legend = L.control({
+        position: 'bottomright'
+    });
+
+    legend.onAdd = function(map) {
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML +=
+            '<i style="color: #EB455F;font-size: 20pt;" class="fa fa-home"></i> Campuran<br>' +
+            '<i style="color: blue;font-size: 20pt;" class="fa fa-home"></i> Laki-Laki<br>' +
+            '<i style="color: #17594A;font-size: 20pt;" class="fa fa-home"></i> Perempuan<br>';
+
+        return div;
+    };
+
+    legend.addTo(mymap);
 </script>
 <style>
-.custom-icon {
+.legend {
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.legend i {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.custom-icon-campuran {
     text-align: center;
     color: #EB455F;
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+.custom-icon-blue {
+    text-align: center;
+    color: blue;
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+.custom-icon-green {
+    text-align: center;
+    color: #17594A;
     font-size: 16pt;
     font-weight: bold;
 }

@@ -35,6 +35,8 @@ else if($_SESSION['role'] != 1){
     .teks {
         height: 70vh;
     }
+
+    <link href="path/to/lightbox.css"rel="stylesheet"/>
     </style>
 </head>
 

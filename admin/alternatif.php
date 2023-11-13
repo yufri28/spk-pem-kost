@@ -11,6 +11,7 @@ if(isset($_POST['simpan'])){
     $latitude = htmlspecialchars($_POST['latitude']);
     $longitude = htmlspecialchars($_POST['longitude']);
     $alamat = htmlspecialchars($_POST['alamat']);
+    $jenis_kost = htmlspecialchars($_POST['jenis_kost']);
     $fasilitas = htmlspecialchars($_POST['fasilitas']);
     $jarak = htmlspecialchars($_POST['jarak']);
     $biaya = htmlspecialchars($_POST['biaya']);
@@ -21,7 +22,8 @@ if(isset($_POST['simpan'])){
         'nama_alternatif' => $namaAlternatif,
         'latitude' =>$latitude,
         'longitude' => $longitude,
-        'alamat' => $alamat       
+        'alamat' => $alamat,       
+        'jenis_kost' => $jenis_kost       
     ];
     $dataSubKriteria = [
         'C1' => $fasilitas,
@@ -39,6 +41,7 @@ if(isset($_POST['edit'])){
     $latitude = htmlspecialchars($_POST['latitude']);
     $longitude = htmlspecialchars($_POST['longitude']);
     $alamat = htmlspecialchars($_POST['alamat']);
+    $jenis_kost = htmlspecialchars($_POST['jenis_kost']);
     $fasilitas = htmlspecialchars($_POST['fasilitas']);
     $jarak = htmlspecialchars($_POST['jarak']);
     $biaya = htmlspecialchars($_POST['biaya']);
@@ -50,7 +53,8 @@ if(isset($_POST['edit'])){
         'nama_alternatif' => $namaAlternatif,
         'latitude' =>$latitude,
         'longitude' => $longitude,
-        'alamat' => $alamat
+        'alamat' => $alamat,
+        'jenis_kost' => $jenis_kost,
     ];
     $dataSubKriteria = [$fasilitas,$jarak,$biaya,$luas,$keamanan_];
     $getDataAlternatif->editAlternatif($dataAlt,$dataSubKriteria);
@@ -131,6 +135,15 @@ Swal.fire({
                                     name="alamat"></textarea>
                             </div>
                             <div class="mb-3 mt-3">
+                                <label for="jenis_kost" class="form-label">Jenis Kost</label>
+                                <select class="form-select" name="jenis_kost" required>
+                                    <option value="">-- Jenis Kost --</option>
+                                    <option value="Campuran">Campuran</option>
+                                    <option value="Laki-Laki">Laki-Laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                            <div class="mb-3 mt-3">
                                 <label for="fasilitas" class="form-label">Fasilitas</label>
                                 <select class="form-select" name="fasilitas" required
                                     aria-label="Default select example">
@@ -204,6 +217,7 @@ Swal.fire({
                                         <th scope="col">Latitude</th>
                                         <th scope="col">Longitude</th>
                                         <th scope="col">Alamat</th>
+                                        <th scope="col">Jenis Kost</th>
                                         <th scope="col">Fasilitas</th>
                                         <th scope="col">Jarak</th>
                                         <th scope="col">Biaya</th>
@@ -220,6 +234,7 @@ Swal.fire({
                                         <td><?=$alternatif['latitude'];?></td>
                                         <td><?=$alternatif['longitude'];?></td>
                                         <td><?=$alternatif['alamat'];?></td>
+                                        <td><?=$alternatif['jenis_kost'];?></td>
                                         <td><?=$alternatif['nama_C1'];?></td>
                                         <td><?=$alternatif['nama_C2'];?></td>
                                         <td><?=$alternatif['nama_C3'];?></td>
@@ -289,6 +304,18 @@ Swal.fire({
                             <label for="alamat" class="form-label">Alamat</label>
                             <textarea class="form-control" required name="alamat"><?=$alternatif['alamat'];?></textarea>
                         </div>
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label for="jenis_kost" class="form-label">Jenis Kost</label>
+                        <select class="form-select" name="jenis_kost" required>
+                            <option value="">-- Jenis Kost --</option>
+                            <option <?=$alternatif['jenis_kost'] == 'Campuran'?'selected':'';?> value="Campuran">
+                                Campuran</option>
+                            <option <?=$alternatif['jenis_kost']== 'Laki-Laki'?'selected':'';?> value="Laki-Laki">
+                                Laki-Laki</option>
+                            <option <?=$alternatif['jenis_kost']== 'Perempuan'?'selected':'';?> value="Perempuan">
+                                Perempuan</option>
+                        </select>
                     </div>
                     <div class="mb-3 mt-3">
                         <label for="fasilitas" class="form-label">Fasilitas</label>

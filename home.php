@@ -6,7 +6,7 @@ if(isset($_SESSION['login']) && $_SESSION['login'] == true && $_SESSION['role'] 
     header("Location: ./admin/index.php");
 }
 require_once './config.php';
-$alternatif = $koneksi->query("SELECT a.nama_alternatif, a.id_alternatif, a.latitude, a.longitude,
+$alternatif = $koneksi->query("SELECT a.nama_alternatif, a.id_alternatif, a.latitude, a.longitude, a.jenis_kost,
 MAX(CASE WHEN k.nama_kriteria = 'Fasilitas' THEN kak.id_alt_kriteria END) AS id_sub_C1,
 MIN(CASE WHEN k.nama_kriteria = 'Jarak' THEN kak.id_alt_kriteria END) AS id_sub_C2,
 MIN(CASE WHEN k.nama_kriteria = 'Biaya' THEN kak.id_alt_kriteria END) AS id_sub_C3,
@@ -43,6 +43,7 @@ GROUP BY a.nama_alternatif;");
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Prompt&family=Righteous&family=Roboto:wght@500&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -77,13 +78,88 @@ GROUP BY a.nama_alternatif;");
 
     <?php
       foreach ($alternatif as $location) {
-        if($location['latitude'] != '-' && $location['longitude'] != '-'){
-            echo "var marker = L.marker([" . $location['latitude'] . ", " . $location['longitude'] . "]).addTo(mymap);";
-            echo "marker.bindPopup('<b>" . $location['nama_alternatif'] . "</b><br>Fasilitas : " . $location['nama_C1'] . "<br>Jarak : " . $location['nama_C2'] . "<br>Biaya : " . $location['nama_C3'] . "<br>Luas Kamar : " . $location['nama_C4'] . "<br>Keamanan : " . $location['nama_C5'] . "').openPopup();";
-        }
+        // if($location['latitude'] != '-' && $location['longitude'] != '-'){
+        //     echo "var marker = L.marker([" . $location['latitude'] . ", " . $location['longitude'] . "]).addTo(mymap);";
+        //     echo "marker.bindPopup('<b>" . $location['nama_alternatif'] . "</b><br>Fasilitas : " . $location['nama_C1'] . "<br>Jarak : " . $location['nama_C2'] . "<br>Biaya : " . $location['nama_C3'] . "<br>Luas Kamar : " . $location['nama_C4'] . "<br>Keamanan : " . $location['nama_C5'] . "').openPopup();";
+        // }
+       
+            if ($location['latitude'] != '-' && $location['longitude'] != '-') {
+                echo "var marker = L.marker([" . $location['latitude'] . ", " . $location['longitude'] . "], {";
+                echo "  icon: L.divIcon({";
+                if($location['jenis_kost'] == 'Campuran'){
+                    echo "className: 'custom-icon-green',";
+                }elseif($location['jenis_kost'] == 'Laki-Laki')
+                {
+                    echo "className: 'custom-icon-blue',";
+                } 
+                elseif($location['jenis_kost'] == 'Perempuan')
+                {
+                    echo "className: 'custom-icon-campuran',";
+                }                
+                echo "    html: '<i class=\"fa fa-home\"></i>',"; // Menggunakan kelas 'fa' dan kelas angka sesuai dengan $iconNumber
+                echo "    iconSize: [40, 40],";
+                echo "    iconAnchor: [20, 40]";
+                echo "  })";
+                echo "}).addTo(mymap);";
+                echo "marker.bindPopup('<b>" . $location['nama_alternatif'] . "</b><br>Fasilitas : " . $location['nama_C1'] . "<br>Jarak : " . $location['nama_C2'] . "<br>Biaya : " . $location['nama_C3'] . "<br>Luas Kamar : " . $location['nama_C4'] . "<br>Keamanan : " . $location['nama_C5'] . "').openPopup();";
+                
+            }
       }
     ?>
+
+    // Tambahkan legenda
+    var legend = L.control({
+        position: 'bottomright'
+    });
+
+    legend.onAdd = function(map) {
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML +=
+            '<i style="color: #EB455F;font-size: 20pt;" class="fa fa-home"></i> Campuran<br>' +
+            '<i style="color: blue;font-size: 20pt;" class="fa fa-home"></i> Laki-Laki<br>' +
+            '<i style="color: #17594A;font-size: 20pt;" class="fa fa-home"></i> Perempuan<br>';
+
+        return div;
+    };
+
+    legend.addTo(mymap);
     </script>
 </body>
 
 </html>
+<style>
+.legend {
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.legend i {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.custom-icon-campuran {
+    text-align: center;
+    color: #EB455F;
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+.custom-icon-blue {
+    text-align: center;
+    color: blue;
+    font-size: 20pt;
+    font-weight: bold;
+}
+
+.custom-icon-green {
+    text-align: center;
+    color: #17594A;
+    font-size: 20pt;
+    font-weight: bold;
+}
+</style>

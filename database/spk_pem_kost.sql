@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 24 Jun 2023 pada 09.09
+-- Waktu pembuatan: 13 Nov 2023 pada 09.39
 -- Versi server: 10.4.24-MariaDB
 -- Versi PHP: 8.1.6
 
@@ -32,25 +32,24 @@ CREATE TABLE `alternatif` (
   `nama_alternatif` varchar(50) NOT NULL,
   `alamat` varchar(150) NOT NULL,
   `latitude` varchar(100) NOT NULL,
-  `longitude` varchar(100) NOT NULL
+  `longitude` varchar(100) NOT NULL,
+  `jenis_kost` enum('Campuran','Laki-Laki','Perempuan') NOT NULL DEFAULT 'Campuran'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data untuk tabel `alternatif`
 --
 
-INSERT INTO `alternatif` (`id_alternatif`, `nama_alternatif`, `alamat`, `latitude`, `longitude`) VALUES
-(1, 'Kost Citra Berlian', '-', '-10.159801235570002', '123.66839311070447'),
-(2, 'Kost Dhijori', '-', '-10.145142320862123', '123.66165838941485'),
-(3, 'Kost Amelia', '-', '-', '-'),
-(4, 'Kost Chairos', '-', '-', '-'),
-(5, 'Kost Vale Yellow', '-', '-10.16015807018046', '123.67088124562777'),
-(6, 'Kost Hijau', '-', '-10.164529173838215', ' 123.63938195501278'),
-(7, 'Kost Putri Linud', '-', '-10.161697241544436', '123.67063339366906'),
-(8, 'Kost Kanaan 2', '-', '-10.156947871297211', '123.64573008685961'),
-(9, 'Kost Biru Mess Gia', '-', '-10.170727424929614', '123.6549079800156'),
-(68, 'Kost Theo', 'Tuak Daun Merah, Kec. Oebobo, Kota Kupang, Nusa Tenggara Tim. 85228', '-10.159259660282185', '123.63460081066292'),
-(69, 'Kost Nelly', 'RJRM+7PR, Gg. Gn. Econ, Tuak Daun Merah, Kec. Oebobo, Kota Kupang, Nusa Tenggara Tim. 85228', '-10.159209220565875', '123.63427862429924');
+INSERT INTO `alternatif` (`id_alternatif`, `nama_alternatif`, `alamat`, `latitude`, `longitude`, `jenis_kost`) VALUES
+(1, 'Kost Citra Berlian', '-', '-10.159801235570002', '123.66839311070447', 'Campuran'),
+(2, 'Kost Dhijori', '-', '-10.145142320862123', '123.66165838941485', 'Perempuan'),
+(5, 'Kost Vale Yellow', '-', '-10.16015807018046', '123.67088124562777', 'Campuran'),
+(6, 'Kost Hijau', '-', '-10.164529173838215', ' 123.63938195501278', 'Laki-Laki'),
+(7, 'Kost Putri Linud', '-', '-10.161697241544436', '123.67063339366906', 'Campuran'),
+(8, 'Kost Kanaan 2', '-', '-10.156947871297211', '123.64573008685961', 'Campuran'),
+(9, 'Kost Biru Mess Gia', '-', '-10.170727424929614', '123.6549079800156', 'Laki-Laki'),
+(68, 'Kost Theo', 'Tuak Daun Merah, Kec. Oebobo, Kota Kupang, Nusa Tenggara Tim. 85228', '-10.159259660282185', '123.63460081066292', 'Campuran'),
+(69, 'Kost Nelly', 'RJRM+7PR, Gg. Gn. Econ, Tuak Daun Merah, Kec. Oebobo, Kota Kupang, Nusa Tenggara Tim. 85228', '-10.159209220565875', '123.63427862429924', 'Perempuan');
 
 -- --------------------------------------------------------
 
@@ -73,7 +72,8 @@ CREATE TABLE `bobot_kriteria` (
 --
 
 INSERT INTO `bobot_kriteria` (`id_bobot`, `C1`, `C2`, `C3`, `C4`, `C5`, `f_id_user`) VALUES
-(11, 0.3, 0.2, 0.2, 0.2, 0.1, 5);
+(14, 0.1, 0.2, 0.2, 0.2, 0.3, 5),
+(15, 1, 0, 0, 0, 0, 12);
 
 -- --------------------------------------------------------
 
@@ -103,16 +103,6 @@ INSERT INTO `kecocokan_alt_kriteria` (`id_alt_kriteria`, `f_id_alternatif`, `f_i
 (8, 2, 'C3', 12),
 (9, 2, 'C4', 20),
 (10, 2, 'C5', 23),
-(11, 3, 'C1', 1),
-(12, 3, 'C2', 7),
-(13, 3, 'C3', 14),
-(14, 3, 'C4', 16),
-(15, 3, 'C5', 22),
-(16, 4, 'C1', 1),
-(17, 4, 'C2', 9),
-(18, 4, 'C3', 15),
-(19, 4, 'C4', 19),
-(20, 4, 'C5', 22),
 (21, 5, 'C1', 3),
 (22, 5, 'C2', 7),
 (23, 5, 'C3', 14),
@@ -230,13 +220,6 @@ CREATE TABLE `tabel_tampung` (
   `f_id_user` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data untuk tabel `tabel_tampung`
---
-
-INSERT INTO `tabel_tampung` (`id`, `prio1`, `prio2`, `prio3`, `prio4`, `prio5`, `f_id_user`) VALUES
-(4, 'Fasilitas', 'Biaya', 'Luas Kamar', 'Jarak', 'Keamanan', 5);
-
 -- --------------------------------------------------------
 
 --
@@ -256,7 +239,10 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`id_user`, `username`, `password`, `role`) VALUES
 (5, 'yupi', '$2y$10$l5/1sEvffJfq58XYecARruHjepF3LE.2jfOVQ015j9oAtv1nYrxbm', 1),
-(6, 'admin', '$2y$10$vKlD7o2zW7D0NyeRZ9gIOuq/H5cD/hjZgmjZ20.8.yRE9FHaJKqkq', 0);
+(6, 'admin', '$2y$10$vKlD7o2zW7D0NyeRZ9gIOuq/H5cD/hjZgmjZ20.8.yRE9FHaJKqkq', 0),
+(10, 'yupi', '$2y$10$vvyy19qet8e/qr08WmtliuceWtRELCjlb8tCvTMrnfdjLccBFNNgK', 1),
+(11, 'yupi', '$2y$10$wgxBRnHjRKqaYmsnD70zW.Y753mRWyfYlRpLvArvdLSOi4EBfJqG6', 1),
+(12, 'yupiw', '$2y$10$Azdj9.7xiIl8db2R6HDjNePvv9gc9w1qpF4Ezl2POJHw/FWqICo/W', 1);
 
 --
 -- Indexes for dumped tables
@@ -302,7 +288,6 @@ ALTER TABLE `sub_kriteria`
 --
 ALTER TABLE `tabel_tampung`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `f_id_user_2` (`f_id_user`),
   ADD KEY `f_id_user` (`f_id_user`);
 
 --
@@ -319,37 +304,31 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `alternatif`
 --
 ALTER TABLE `alternatif`
-  MODIFY `id_alternatif` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id_alternatif` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT untuk tabel `bobot_kriteria`
 --
 ALTER TABLE `bobot_kriteria`
-  MODIFY `id_bobot` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_bobot` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT untuk tabel `kecocokan_alt_kriteria`
 --
 ALTER TABLE `kecocokan_alt_kriteria`
-  MODIFY `id_alt_kriteria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
+  MODIFY `id_alt_kriteria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
 
 --
 -- AUTO_INCREMENT untuk tabel `sub_kriteria`
 --
 ALTER TABLE `sub_kriteria`
-  MODIFY `id_sub_kriteria` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
-
---
--- AUTO_INCREMENT untuk tabel `tabel_tampung`
---
-ALTER TABLE `tabel_tampung`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_sub_kriteria` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_user` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
