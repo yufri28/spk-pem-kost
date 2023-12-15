@@ -18,193 +18,383 @@ $C3_ = 0;
 $C4_ = 0;
 $C5_ = 0;
 $total_bobot = 0;
+$kecamatan_str = "Semua";
+
+function kecamatan($koneksi)
+{
+    $data = $koneksi->query('SELECT kecamatan FROM alternatif');
+
+    $dataKecamatan = array();
+    while ($row = $data->fetch_assoc()) {
+        array_push($dataKecamatan, $row);
+    }
+    // Hapus duplikat menggunakan fungsi array_unique
+    $uniqueRows = array_map("unserialize", array_unique(array_map("serialize", $dataKecamatan)));
+
+    return $uniqueRows;
+}
+
+
+$dataKecamatan = kecamatan($koneksi);
 
 if (isset($_POST['e_bobot_kriteria'])) {
     $C1_ = htmlspecialchars($_POST['e_bobot_kriteria'][0]);
     $C2_ = htmlspecialchars($_POST['e_bobot_kriteria'][1]);
     $C3_ = htmlspecialchars($_POST['e_bobot_kriteria'][2]);
     $C4_ = htmlspecialchars($_POST['e_bobot_kriteria'][3]);
-    $C5_ = htmlspecialchars($_POST['e_bobot_kriteria'][3]);
+    $C5_ = htmlspecialchars($_POST['e_bobot_kriteria'][4]);
     $total_bobot = $C1_ + $C2_ + $C3_ + $C4_ + $C5_;
 
-    $bobot_c1 = $C1_ / $total_bobot;
-    $bobot_c2 = $C2_ / $total_bobot;
-    $bobot_c3 = $C3_ / $total_bobot;
-    $bobot_c4 = $C4_ / $total_bobot;
-    $bobot_c5 = $C5_ / $total_bobot;
-
+    $bobot_c1 = ($C1_  != 0 && $total_bobot != 0) ? ($C1_ / $total_bobot) : 0;
+    $bobot_c2 = ($C2_  != 0 && $total_bobot != 0) ? ($C2_ / $total_bobot) : 0;
+    $bobot_c3 = ($C3_  != 0 && $total_bobot != 0) ? ($C3_ / $total_bobot) : 0;
+    $bobot_c4 = ($C4_  != 0 && $total_bobot != 0) ? ($C4_ / $total_bobot) : 0;
+    $bobot_c5 = ($C5_  != 0 && $total_bobot != 0) ? ($C5_ / $total_bobot) : 0;
+    $kecamatan_str = htmlspecialchars($_POST['kecamatan']);
 
     $post = true;
 }
-
-$hitung = $koneksi->query(
-    "SELECT a.nama_alternatif, a.id_alternatif, a.alamat, a.latitude, a.longitude, a.jenis_kost,
-    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
-    MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
-    MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
-    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
-    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
-    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
-    / 
-    (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C1,
-    (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS div_C2,
-    (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS div_C3,
-    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
-    / 
-    (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C4,
-    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
-    / 
-    (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C5,
-     MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.nama_sub_kriteria END) AS nama_C1,
-     MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.nama_sub_kriteria END) AS nama_C2,
-     MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS nama_C3,
-     MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.nama_sub_kriteria END) AS nama_C4,
-     MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.nama_sub_kriteria END) AS nama_C5,
-     ((MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+if ($kecamatan_str != "Semua") {
+    $hitung = $koneksi->query(
+        "SELECT a.nama_alternatif, a.id_alternatif, a.alamat, a.latitude, a.longitude, a.jenis_kost,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
         / 
         (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * $bobot_c1) +
-        ((SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C1,
+        (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) * $bobot_c2) +
-        ((SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS div_C2,
+        (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) * $bobot_c3) +
-        (MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS div_C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
         / 
         (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * $bobot_c4) +
-        (MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
         / 
         (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
          FROM alternatif a
          JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
          JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * $bobot_c5)) AS nilai_akhir
-    FROM alternatif a
-    JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-    JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-    JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
-    GROUP BY a.nama_alternatif
-    UNION ALL
-    SELECT 'min_max', NULL, NULL, NULL, NULL, NULL,
-    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
-    MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
-    MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
-    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
-    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
-    NULL AS div_C1,
-    NULL AS div_C2,
-    NULL AS div_C3,
-    NULL AS div_C4,
-    NULL AS div_C5,
-    NULL AS nama_C1,
-    NULL AS nama_C2,
-    NULL AS nama_C3,
-    NULL AS nama_C4,
-    NULL AS nama_C5,
-    NULL AS nil_ak
-    FROM alternatif a
-    JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-    JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-    JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria;"
-);
-
-// Matriks Keputusan
-$matriksKeputusan = $koneksi->query(
-    "SELECT a.nama_alternatif,
-    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
-    MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
-    MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
-    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
-    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5
-    FROM alternatif a
-    JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-    JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-    JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
-    GROUP BY a.nama_alternatif
-    UNION ALL
-    SELECT 'min_max',
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C5,
+         MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.nama_sub_kriteria END) AS nama_C1,
+         MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.nama_sub_kriteria END) AS nama_C2,
+         MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS nama_C3,
+         MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.nama_sub_kriteria END) AS nama_C4,
+         MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.nama_sub_kriteria END) AS nama_C5,
+         ((MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+            / 
+            (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * $bobot_c1) +
+            ((SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) * $bobot_c2) +
+            ((SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) * $bobot_c3) +
+            (MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+            / 
+            (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * $bobot_c4) +
+            (MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+            / 
+            (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * $bobot_c5)) AS nilai_akhir
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria WHERE a.kecamatan='$kecamatan_str'
+        GROUP BY a.nama_alternatif
+        UNION ALL
+        SELECT 'min_max', NULL, NULL, NULL, NULL, NULL,
         MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
         MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
         MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
         MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
-        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5
-    FROM alternatif a
-    JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-    JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-    JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria;"
-);
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
+        NULL AS div_C1,
+        NULL AS div_C2,
+        NULL AS div_C3,
+        NULL AS div_C4,
+        NULL AS div_C5,
+        NULL AS nama_C1,
+        NULL AS nama_C2,
+        NULL AS nama_C3,
+        NULL AS nama_C4,
+        NULL AS nama_C5,
+        NULL AS nil_ak
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria WHERE a.kecamatan='$kecamatan_str';"
+    );
 
-$matriksTernomalisasi = $koneksi->query(
-    "SELECT a.nama_alternatif,
-    MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
-    / 
-    (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C1,
-    (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS div_C2,
-    (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS div_C3,
-    MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
-    / 
-    (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C4,
-    MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
-    / 
-    (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
-     FROM alternatif a
-     JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-     JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-     JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C5
-    FROM alternatif a
-    JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-    JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-    JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
-    GROUP BY a.nama_alternatif ORDER BY a.id_alternatif;"
-);
+    // Matriks Keputusan
+    $matriksKeputusan = $koneksi->query(
+        "SELECT a.nama_alternatif,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
+        GROUP BY a.nama_alternatif
+        UNION ALL
+        SELECT 'min_max',
+            MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+            MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+            MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+            MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+            MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria WHERE a.kecamatan='$kecamatan_str';"
+    );
+
+    $matriksTernomalisasi = $koneksi->query(
+        "SELECT a.nama_alternatif,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+        / 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C1,
+        (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS div_C2,
+        (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS div_C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+        / 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+        / 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C5
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria WHERE a.kecamatan='$kecamatan_str'
+        GROUP BY a.nama_alternatif ORDER BY a.id_alternatif;"
+    );
+} else {
+    $hitung = $koneksi->query(
+        "SELECT a.nama_alternatif, a.id_alternatif, a.alamat, a.latitude, a.longitude, a.jenis_kost,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+        / 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C1,
+        (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS div_C2,
+        (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS div_C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+        / 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+        / 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C5,
+         MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.nama_sub_kriteria END) AS nama_C1,
+         MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.nama_sub_kriteria END) AS nama_C2,
+         MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS nama_C3,
+         MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.nama_sub_kriteria END) AS nama_C4,
+         MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.nama_sub_kriteria END) AS nama_C5,
+         ((MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+            / 
+            (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * $bobot_c1) +
+            ((SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) * $bobot_c2) +
+            ((SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) * $bobot_c3) +
+            (MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+            / 
+            (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * $bobot_c4) +
+            (MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+            / 
+            (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+             FROM alternatif a
+             JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+             JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+             JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) * $bobot_c5)) AS nilai_akhir
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
+        GROUP BY a.nama_alternatif
+        UNION ALL
+        SELECT 'min_max', NULL, NULL, NULL, NULL, NULL,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
+        NULL AS div_C1,
+        NULL AS div_C2,
+        NULL AS div_C3,
+        NULL AS div_C4,
+        NULL AS div_C5,
+        NULL AS nama_C1,
+        NULL AS nama_C2,
+        NULL AS nama_C3,
+        NULL AS nama_C4,
+        NULL AS nama_C5,
+        NULL AS nil_ak
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria;"
+    );
+
+    // Matriks Keputusan
+    $matriksKeputusan = $koneksi->query(
+        "SELECT a.nama_alternatif,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
+        GROUP BY a.nama_alternatif
+        UNION ALL
+        SELECT 'min_max',
+            MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+            MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+            MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+            MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+            MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria;"
+    );
+
+    $matriksTernomalisasi = $koneksi->query(
+        "SELECT a.nama_alternatif,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+        / 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C1,
+        (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS div_C2,
+        (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) / MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS div_C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+        / 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+        / 
+        (SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) 
+         FROM alternatif a
+         JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+         JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+         JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) AS div_C5
+        FROM alternatif a
+        JOIN kecocokan_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
+        GROUP BY a.nama_alternatif ORDER BY a.id_alternatif;"
+    );
+}
+
+
 
 // foreach ($hitung as $key => $value) {
 //         print($value['div_C1']."\t".$value['C1']."\t".($value['div_C1']*0.2)."\n");
@@ -320,8 +510,8 @@ usort($tampungHasil, function ($a, $b) {
         <div class="d-xxl-flex">
             <div class="col-xxl-12 mt-3 ms-xxl-6 mb-1">
                 <!-- <div class="card"> -->
-                <div class="d-flex">
-                    <div class="col-3">
+                <div class="d-xxl-flex">
+                    <div class="col-xxl-3 me-1">
                         <div class="card mb-4">
                             <div class="card-body">
                                 <?php if ($post == false) : ?>
@@ -387,6 +577,15 @@ usort($tampungHasil, function ($a, $b) {
                                             };
                                         </script>
                                         <hr>
+                                        <div class="mb-3 mt-3">
+                                            <label for="bobot_kriteria" class="form-label">Kecamatan</label>
+                                            <select class="form-select" name="kecamatan" aria-label="Default select example">
+                                                <option <?= $kecamatan_str == "Semua" ? 'selected' : '' ?> value="Semua">Semua</option>
+                                                <?php foreach ($dataKecamatan as $kecamatan) : ?>
+                                                    <option <?= $kecamatan_str == $kecamatan['kecamatan'] ? 'selected' : '' ?> value="<?= $kecamatan['kecamatan']; ?>"><?= $kecamatan['kecamatan']; ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
                                         <i><small>Range bobot setiap Kriteria : 0 - 100</small></i>
                                         <div class="mb-3 mt-3">
                                             <span id="bobotValue1"><label for="bobot_kriteria" class="form-label">Fasilitas</label>:
@@ -399,23 +598,23 @@ usort($tampungHasil, function ($a, $b) {
                                                 <label for="bobot_kriteria" class="form-label">Jarak</label>:
                                                 0
                                             </span>
-                                            <input type="range" min="0" max="100" onload="updateWeight1(this.value)" oninput="updateWeight2(this.value)" class="form-control-range edit-bobot-kriteria2 col-12" name="e_bobot_kriteria[]" value="<?= $C2_; ?>">
+                                            <input type="range" min="0" max="100" onload="updateWeight2(this.value)" oninput="updateWeight2(this.value)" class="form-control-range edit-bobot-kriteria2 col-12" name="e_bobot_kriteria[]" value="<?= $C2_; ?>">
                                         </div>
                                         <div class="mb-3 mt-3">
 
                                             <span id="bobotValue3"><label for="bobot_kriteria" class="form-label">Biaya</label>:
                                                 0</span>
-                                            <input type="range" min="0" max="100" onload="updateWeight1(this.value)" oninput="updateWeight3(this.value)" class="form-control-range edit-bobot-kriteria3 col-12" name="e_bobot_kriteria[]" value="<?= $C3_; ?>">
+                                            <input type="range" min="0" max="100" onload="updateWeight3(this.value)" oninput="updateWeight3(this.value)" class="form-control-range edit-bobot-kriteria3 col-12" name="e_bobot_kriteria[]" value="<?= $C3_; ?>">
                                         </div>
                                         <div class="mb-3 mt-3">
                                             <span id="bobotValue4"><label for="bobot_kriteria" class="form-label">Luas Kamar</label>:
                                                 0</span>
-                                            <input type="range" min="0" max="100" onload="updateWeight1(this.value)" oninput="updateWeight4(this.value)" class="form-control-range edit-bobot-kriteria4 col-12" name="e_bobot_kriteria[]" value="<?= $C4_; ?>">
+                                            <input type="range" min="0" max="100" onload="updateWeight4(this.value)" oninput="updateWeight4(this.value)" class="form-control-range edit-bobot-kriteria4 col-12" name="e_bobot_kriteria[]" value="<?= $C4_; ?>">
                                         </div>
                                         <div class="mb-3 mt-3">
-                                            <span id="bobotValue4"><label for="bobot_kriteria" class="form-label">Keamanan</label>:
+                                            <span id="bobotValue5"><label for="bobot_kriteria" class="form-label">Keamanan</label>:
                                                 0</span>
-                                            <input type="range" min="0" max="100" onload="updateWeight1(this.value)" oninput="updateWeight5(this.value)" class="form-control-range edit-bobot-kriteria5 col-12" name="e_bobot_kriteria[]" value="<?= $C5_; ?>">
+                                            <input type="range" min="0" max="100" onload="updateWeight5(this.value)" oninput="updateWeight5(this.value)" class="form-control-range edit-bobot-kriteria5 col-12" name="e_bobot_kriteria[]" value="<?= $C5_; ?>">
                                         </div>
                                         <button type="submit" name="edit" class="btn col-12 btn-outline-primary">
                                             Kirim
@@ -426,7 +625,7 @@ usort($tampungHasil, function ($a, $b) {
                             </div>
                         </div>
                     </div>
-                    <div class="col-9">
+                    <div class="col-xxl-9">
                         <div class="card mb-4">
                             <div class="card-body">
                                 <div id="mapid"></div>

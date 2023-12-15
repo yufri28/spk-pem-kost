@@ -53,7 +53,7 @@ global $conn;
                     <a class="nav-link <?= $_SESSION['menu'] == 'beranda-user' ? 'active' : ''; ?>" href="index.php">Beranda</a>
                     <!-- <a class="nav-link <?= $_SESSION['menu'] == 'alternatif' ? 'active' : ''; ?>"
                         href="alternatif.php">Alternatif</a> -->
-                    <a class="nav-link <?= $_SESSION['menu'] == 'kriteria' ? 'active' : ''; ?>" href="kriteria.php">Kriteria</a>
+                    <!-- <a class="nav-link <?= $_SESSION['menu'] == 'kriteria' ? 'active' : ''; ?>" href="kriteria.php">Kriteria</a> -->
                     <a class="nav-link <?= $_SESSION['menu'] == 'penilaian' ? 'active' : ''; ?>" href="kost.php">Kost</a>
                     <a class="nav-link <?= $_SESSION['menu'] == 'hasil' ? 'active' : ''; ?>" href="hasil.php">Hasil</a>
                     <a class="nav-link" href="../index.php">Keluar</a>
