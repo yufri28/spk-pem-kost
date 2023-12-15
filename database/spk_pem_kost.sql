@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.0.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 13 Nov 2023 pada 09.39
--- Versi server: 10.4.24-MariaDB
--- Versi PHP: 8.1.6
+-- Waktu pembuatan: 15 Des 2023 pada 07.56
+-- Versi server: 10.4.14-MariaDB
+-- Versi PHP: 7.2.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -33,23 +33,24 @@ CREATE TABLE `alternatif` (
   `alamat` varchar(150) NOT NULL,
   `latitude` varchar(100) NOT NULL,
   `longitude` varchar(100) NOT NULL,
-  `jenis_kost` enum('Campuran','Laki-Laki','Perempuan') NOT NULL DEFAULT 'Campuran'
+  `jenis_kost` enum('Campuran','Laki-Laki','Perempuan') NOT NULL DEFAULT 'Campuran',
+  `kecamatan` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data untuk tabel `alternatif`
 --
 
-INSERT INTO `alternatif` (`id_alternatif`, `nama_alternatif`, `alamat`, `latitude`, `longitude`, `jenis_kost`) VALUES
-(1, 'Kost Citra Berlian', '-', '-10.159801235570002', '123.66839311070447', 'Campuran'),
-(2, 'Kost Dhijori', '-', '-10.145142320862123', '123.66165838941485', 'Perempuan'),
-(5, 'Kost Vale Yellow', '-', '-10.16015807018046', '123.67088124562777', 'Campuran'),
-(6, 'Kost Hijau', '-', '-10.164529173838215', ' 123.63938195501278', 'Laki-Laki'),
-(7, 'Kost Putri Linud', '-', '-10.161697241544436', '123.67063339366906', 'Campuran'),
-(8, 'Kost Kanaan 2', '-', '-10.156947871297211', '123.64573008685961', 'Campuran'),
-(9, 'Kost Biru Mess Gia', '-', '-10.170727424929614', '123.6549079800156', 'Laki-Laki'),
-(68, 'Kost Theo', 'Tuak Daun Merah, Kec. Oebobo, Kota Kupang, Nusa Tenggara Tim. 85228', '-10.159259660282185', '123.63460081066292', 'Campuran'),
-(69, 'Kost Nelly', 'RJRM+7PR, Gg. Gn. Econ, Tuak Daun Merah, Kec. Oebobo, Kota Kupang, Nusa Tenggara Tim. 85228', '-10.159209220565875', '123.63427862429924', 'Perempuan');
+INSERT INTO `alternatif` (`id_alternatif`, `nama_alternatif`, `alamat`, `latitude`, `longitude`, `jenis_kost`, `kecamatan`) VALUES
+(1, 'Kost Citra Berlian', '-', '-10.159801235570002', '123.66839311070447', 'Campuran', 'Kupang Tengah'),
+(2, 'Kost Dhijori', '-', '-10.145142320862123', '123.66165838941485', 'Perempuan', 'Kota Raja'),
+(5, 'Kost Vale Yellow', '-', '-10.16015807018046', '123.67088124562777', 'Campuran', 'Kupang Tengah'),
+(6, 'Kost Hijau', '-', '-10.164529173838215', ' 123.63938195501278', 'Laki-Laki', 'Oebobo'),
+(7, 'Kost Putri Linud', '-', '-10.161697241544436', '123.67063339366906', 'Campuran', 'Kupang Tengah'),
+(8, 'Kost Kanaan 2', '-', '-10.156947871297211', '123.64573008685961', 'Campuran', 'Kelapa Lima'),
+(9, 'Kost Biru Mess Gia', '-', '-10.170727424929614', '123.6549079800156', 'Laki-Laki', 'Maulafa'),
+(68, 'Kost Theo', 'Tuak Daun Merah, Kec. Oebobo, Kota Kupang, Nusa Tenggara Tim. 85228', '-10.159259660282185', '123.63460081066292', 'Campuran', 'Oebobo'),
+(69, 'Kost Nelly', 'RJRM+7PR, Gg. Gn. Econ, Tuak Daun Merah, Kec. Oebobo, Kota Kupang, Nusa Tenggara Tim. 85228', '-10.159209220565875', '123.63427862429924', 'Perempuan', 'Oebobo');
 
 -- --------------------------------------------------------
 
@@ -304,7 +305,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `alternatif`
 --
 ALTER TABLE `alternatif`
-  MODIFY `id_alternatif` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `id_alternatif` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT untuk tabel `bobot_kriteria`
@@ -316,7 +317,7 @@ ALTER TABLE `bobot_kriteria`
 -- AUTO_INCREMENT untuk tabel `kecocokan_alt_kriteria`
 --
 ALTER TABLE `kecocokan_alt_kriteria`
-  MODIFY `id_alt_kriteria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
+  MODIFY `id_alt_kriteria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
 
 --
 -- AUTO_INCREMENT untuk tabel `sub_kriteria`
